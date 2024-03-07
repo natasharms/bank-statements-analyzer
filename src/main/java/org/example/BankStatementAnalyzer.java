@@ -1,14 +1,20 @@
 package org.example;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
 import java.util.List;
 
 public class BankStatementAnalyzer {
+
     public void analyze(final BankStatementParser bankStatementParser) throws IOException {
 
         final String RESOURCES = "src/main/resources/bank-data-simple.csv";
+
         final List<BankTransactionData> data = bankStatementParser.parseFrom(RESOURCES);
         final BankTransactionProcessor bankTransactionProcessor = new BankTransactionProcessor(data);
+
         summary(bankTransactionProcessor);
 
     }
