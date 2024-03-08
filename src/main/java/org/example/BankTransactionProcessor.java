@@ -57,7 +57,9 @@ public class BankTransactionProcessor {
         List<String> stringList = new ArrayList<>();
 
         for (BankTransactionData bankTransactionDataFile : data){
-            stringList.add(bankTransactionDataFile.description());
+            if(bankTransactionDataFile.value()<0){
+                stringList.add(bankTransactionDataFile.description());
+            }
         }
 
         return stringList;
@@ -91,6 +93,20 @@ public class BankTransactionProcessor {
         }
 
         return total;
+    }
+
+    public List<Map.Entry<String, Double>> categoriesWithMostExpenses(){
+        List<String> expensesList = descriptionList();
+        Map<String, Double> expensesMap = new LinkedHashMap<>();
+
+        for (String category : expensesList) {
+            expensesMap.put(category, totalForCategory(category));
+        }
+
+        List<Map.Entry<String, Double>> list = new ArrayList<>(expensesMap.entrySet());
+        list.sort(Map.Entry.comparingByValue());
+
+        return list;
     }
 
 }

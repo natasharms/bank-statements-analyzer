@@ -1,8 +1,5 @@
 package org.example;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.IOException;
 import java.util.List;
 
@@ -24,8 +21,8 @@ public class BankStatementAnalyzer {
         System.out.println("Monthly Total: " + bankTransactionProcessor.totalInMonth("January"));
         System.out.println("Most Common Expenses: " + bankTransactionProcessor.mostCommonExpenses());
         System.out.println("All transactions in January: " + bankTransactionProcessor.monthlyTransactions("January"));
-        System.out.println("Total by category: " + bankTransactionProcessor.totalForCategory("Tesco"));
-    }
+        System.out.println("Total for Tesco: " + bankTransactionProcessor.totalForCategory("Tesco"));
+        System.out.println("Categories with more expenses: " + bankTransactionProcessor.categoriesWithMostExpenses());}
 
 
 }
