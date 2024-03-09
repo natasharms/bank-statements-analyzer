@@ -12,7 +12,8 @@ import static java.nio.file.Files.readAllLines;
 
 public class BankStatementCSVParser implements BankStatementParser {
 
-    private static final DateTimeFormatter formatDate = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+    private static final String CSV_DELIMITER = ",";
 
     @Override
     public List<BankTransactionData> parseFrom(String url) throws IOException {
@@ -26,9 +27,9 @@ public class BankStatementCSVParser implements BankStatementParser {
         final List<BankTransactionData> bankTransactionDataList = new ArrayList<>();
 
         for (final String line : lines) {
-            String[] lineData = line.split(",");
+            String[] lineData = line.split(CSV_DELIMITER);
 
-            LocalDate date = LocalDate.parse(lineData[0], formatDate);
+            LocalDate date = LocalDate.parse(lineData[0], DATE_FORMATTER);
             double value = Double.parseDouble(lineData[1]);
             String description = lineData[2];
 

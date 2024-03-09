@@ -12,128 +12,74 @@ public class BankTransactionProcessor {
     }
 
     public Double totalAmount() {
-
-        double total = 0;
-
-        for (final BankTransactionData bankTransactionDataFile : data){
-            if(bankTransactionDataFile.value()>0){
-                total += bankTransactionDataFile.value();
-            }
-        }
-
-        return total;
+        return data.stream()
+                .filter(bankTransactionData -> bankTransactionData.value() > 0)
+                .mapToDouble(BankTransactionData::value)
+                .sum();
     }
 
-    public List<BankTransactionData> monthlyTransactions(final String month){
-
-        List<BankTransactionData> monthTransactions = new ArrayList<>();
-        for (BankTransactionData bankTransactionDataFile : data){
-            if(bankTransactionDataFile.date().getMonth().name().equalsIgnoreCase(month)){
-                monthTransactions.add(new BankTransactionData(bankTransactionDataFile.date(), bankTransactionDataFile.value(), bankTransactionDataFile.description()));
-            }
-        }
-
-        return monthTransactions;
+    public List<BankTransactionData> monthlyTransactions(String month) {
+        return data.stream()
+                .filter(bankTransactionData -> bankTransactionData.date().getMonth().name().equalsIgnoreCase(month))
+                .collect(Collectors.toList());
     }
 
-    public Double totalInMonth(final String month){
-
-        double total = 0;
-        List<BankTransactionData> monthTransactions = new ArrayList<>(monthlyTransactions(month));
-
-        for (BankTransactionData value : monthTransactions) {
-            total += value.value();
-        }
-
-        return total;
+    public double totalInMonth(String month) {
+        return monthlyTransactions(month).stream()
+                .mapToDouble(BankTransactionData::value)
+                .sum();
     }
 
     public List<String> descriptionList (){
-        List<String> stringList = new ArrayList<>();
-
-        for (BankTransactionData bankTransactionDataFile : data){
-            if(bankTransactionDataFile.value()<0){
-                stringList.add(bankTransactionDataFile.description());
-            }
-        }
-
-        return stringList;
+        return data.stream()
+                .filter(bankTransactionData -> bankTransactionData.value() < 0)
+                .map(BankTransactionData::description)
+                .collect(Collectors.toList());
     }
 
     public List<String> mostCommonExpenses(){
-        List<String> expensesList = descriptionList();
-
-        Map<String, Long> occurrencesMap = expensesList.stream()
-                .collect(Collectors.groupingBy(s -> s, Collectors.counting()));
-
-        List<String> sortedExpenses = occurrencesMap.entrySet().stream()
+        return descriptionList().stream()
+                .collect(Collectors.groupingBy(s -> s, Collectors.counting()))
+                .entrySet().stream()
                 .sorted(Map.Entry.<String, Long>comparingByValue().reversed())
                 .map(Map.Entry::getKey)
-                .toList();
-
-        return sortedExpenses.stream()
                 .distinct()
                 .limit(10)
-                .toList();
+                .collect(Collectors.toList());
     }
 
     public double totalForCategory(final String category){
-        double total = 0;
-
-        for(final BankTransactionData bankTransactionData : data){
-            if(bankTransactionData.description().equalsIgnoreCase(category)){
-                total += bankTransactionData.value();
-            }
-        }
-
-        return total;
+        return data.stream()
+                .filter(bankTransactionData -> bankTransactionData.description().equalsIgnoreCase(category))
+                .mapToDouble(BankTransactionData::value)
+                .sum();
     }
 
     public List<Map.Entry<String, Double>> categoriesWithMostExpenses(){
-        List<String> expensesList = descriptionList();
-        Map<String, Double> expensesMap = new LinkedHashMap<>();
-
-        for (String category : expensesList) {
-            expensesMap.put(category, totalForCategory(category));
-        }
-
-        List<Map.Entry<String, Double>> list = new ArrayList<>(expensesMap.entrySet());
-        list.sort(Map.Entry.comparingByValue());
-
-        return list;
+        return descriptionList().stream()
+                .collect(Collectors.toMap(
+                        category -> category,
+                        this::totalForCategory,
+                        Double::sum,
+                        LinkedHashMap::new))
+                .entrySet().stream()
+                .sorted(Map.Entry.comparingByValue())
+                .collect(Collectors.toList());
     }
 
     public Map<String, Double> expensesByMonth(){
-        Map<String, Double> byMonth = new HashMap<>();
-
-        Set<String> monthsSet = new HashSet<>();
-        for(BankTransactionData bankTransactionData : data){
-            monthsSet.add(bankTransactionData.date().getMonth().name());
-        }
-
-        for(String month : monthsSet){
-            double total = totalInMonth(month);
-            byMonth.put(month, total);
-        }
-
-        return byMonth;
+        return data.stream()
+                .collect(Collectors.groupingBy(
+                        bankTransactionData -> bankTransactionData.date().getMonth().name(),
+                        Collectors.summingDouble(BankTransactionData::value)));
     }
 
     public Map<String, List<BankTransactionData>> listOfExpensesByMonth(){
-        Set<String> monthsSet = new HashSet<>();
-        Map<String, List<BankTransactionData>> byMonth = new HashMap<>();
-
-        for(BankTransactionData bankTransactionData : data){
-            monthsSet.add(bankTransactionData.date().getMonth().name());
-        }
-
-        for(String month : monthsSet){
-            List<BankTransactionData> total = monthlyTransactions(month);
-            byMonth.put(month, total);
-        }
-
-        return byMonth;
+        return data.stream()
+                .collect(Collectors.groupingBy(
+                        bankTransactionData -> bankTransactionData.date().getMonth().name(),
+                        LinkedHashMap::new,
+                        Collectors.toList()));
     }
-
 }
 

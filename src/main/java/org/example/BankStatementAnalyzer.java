@@ -1,22 +1,18 @@
 package org.example;
 
 import java.io.IOException;
-import java.util.List;
 
 public class BankStatementAnalyzer {
 
     public void analyze(final BankStatementParser bankStatementParser) throws IOException {
 
         final String RESOURCES = "src/main/resources/bank-data-simple.csv";
-
-        final List<BankTransactionData> data = bankStatementParser.parseFrom(RESOURCES);
-        final BankTransactionProcessor bankTransactionProcessor = new BankTransactionProcessor(data);
-
-        summary(bankTransactionProcessor);
+        final BankTransactionProcessor bankTransactionProcessor = new BankTransactionProcessor(bankStatementParser.parseFrom(RESOURCES));
+        printSummary(bankTransactionProcessor);
 
     }
 
-    private static void summary(final BankTransactionProcessor bankTransactionProcessor){
+    private static void printSummary(final BankTransactionProcessor bankTransactionProcessor){
         System.out.println("Total earned: " + bankTransactionProcessor.totalAmount());
         System.out.println("\nMonthly Total: " + bankTransactionProcessor.totalInMonth("January"));
         System.out.println("\nMost Common Expenses: " + bankTransactionProcessor.mostCommonExpenses());
