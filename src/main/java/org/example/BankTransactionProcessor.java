@@ -16,11 +16,9 @@ public class BankTransactionProcessor {
         double total = 0;
 
         for (final BankTransactionData bankTransactionDataFile : data){
-
             if(bankTransactionDataFile.value()>0){
                 total += bankTransactionDataFile.value();
             }
-
         }
 
         return total;
@@ -29,11 +27,8 @@ public class BankTransactionProcessor {
     public List<BankTransactionData> monthlyTransactions(final String month){
 
         List<BankTransactionData> monthTransactions = new ArrayList<>();
-
         for (BankTransactionData bankTransactionDataFile : data){
-            String dateString = bankTransactionDataFile.date().getMonth().name();
-
-            if(dateString.equalsIgnoreCase(month)){
+            if(bankTransactionDataFile.date().getMonth().name().equalsIgnoreCase(month)){
                 monthTransactions.add(new BankTransactionData(bankTransactionDataFile.date(), bankTransactionDataFile.value(), bankTransactionDataFile.description()));
             }
         }
@@ -63,7 +58,6 @@ public class BankTransactionProcessor {
         }
 
         return stringList;
-
     }
 
     public List<String> mostCommonExpenses(){
@@ -107,6 +101,38 @@ public class BankTransactionProcessor {
         list.sort(Map.Entry.comparingByValue());
 
         return list;
+    }
+
+    public Map<String, Double> expensesByMonth(){
+        Map<String, Double> byMonth = new HashMap<>();
+
+        Set<String> monthsSet = new HashSet<>();
+        for(BankTransactionData bankTransactionData : data){
+            monthsSet.add(bankTransactionData.date().getMonth().name());
+        }
+
+        for(String month : monthsSet){
+            double total = totalInMonth(month);
+            byMonth.put(month, total);
+        }
+
+        return byMonth;
+    }
+
+    public Map<String, List<BankTransactionData>> listOfExpensesByMonth(){
+        Set<String> monthsSet = new HashSet<>();
+        Map<String, List<BankTransactionData>> byMonth = new HashMap<>();
+
+        for(BankTransactionData bankTransactionData : data){
+            monthsSet.add(bankTransactionData.date().getMonth().name());
+        }
+
+        for(String month : monthsSet){
+            List<BankTransactionData> total = monthlyTransactions(month);
+            byMonth.put(month, total);
+        }
+
+        return byMonth;
     }
 
 }

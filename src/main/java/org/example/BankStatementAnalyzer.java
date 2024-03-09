@@ -18,11 +18,15 @@ public class BankStatementAnalyzer {
 
     private static void summary(final BankTransactionProcessor bankTransactionProcessor){
         System.out.println("Total earned: " + bankTransactionProcessor.totalAmount());
-        System.out.println("Monthly Total: " + bankTransactionProcessor.totalInMonth("January"));
-        System.out.println("Most Common Expenses: " + bankTransactionProcessor.mostCommonExpenses());
-        System.out.println("All transactions in January: " + bankTransactionProcessor.monthlyTransactions("January"));
-        System.out.println("Total for Tesco: " + bankTransactionProcessor.totalForCategory("Tesco"));
-        System.out.println("Categories with more expenses: " + bankTransactionProcessor.categoriesWithMostExpenses());}
+        System.out.println("\nMonthly Total: " + bankTransactionProcessor.totalInMonth("January"));
+        System.out.println("\nMost Common Expenses: " + bankTransactionProcessor.mostCommonExpenses());
+        System.out.println("\nAll transactions in January: " + bankTransactionProcessor.monthlyTransactions("January"));
+        System.out.println("\nTotal for Tesco: " + bankTransactionProcessor.totalForCategory("Tesco"));
+        System.out.println("\nCategories with more expenses: " + bankTransactionProcessor.categoriesWithMostExpenses());
+        System.out.println("\nExpenses by month = " + bankTransactionProcessor.expensesByMonth());
+        System.out.println("\nList of expenses by month = " + bankTransactionProcessor.listOfExpensesByMonth());
+
+    }
 
 
 }

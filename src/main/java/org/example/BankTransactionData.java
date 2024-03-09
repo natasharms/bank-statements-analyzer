@@ -10,10 +10,8 @@ public record BankTransactionData(LocalDate date, double value, String descripti
         final DateTimeFormatter formatDate = DateTimeFormatter.ofPattern("dd-MM-yyyy");
         String formattedDate = formatDate.format(date);
 
-        return "Bank Transactions: {" +
-                "date = " + formattedDate +
+        return "\ndate = " + formattedDate +
                 ", value = " + value +
-                ", description = " + description +
-                '}';
+                ", description = " + description;
     }
 }
